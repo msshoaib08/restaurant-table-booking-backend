@@ -9,8 +9,23 @@ dotenv.config();
 const server = express();
 const PORT = process.env.PORT || 5001;
 
+const allowedOrigins = [
+	'http://localhost:3000',
+	'https://restaurant-table-booking-frontend-ashy.vercel.app',
+];
+
+const corsOptions = {
+	origin: function (origin, callback) {
+		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
+};
+
 server.use(express.json());
-server.use(cors({ origin: 'http://localhost:3000' }));
+server.use(cors(corsOptions));
 
 server.use('/api/bookings', bookingRoutes);
 server.use('/api/available-times', timeSlotRoutes);
